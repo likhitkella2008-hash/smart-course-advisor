@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMRITA Smart Course Advisor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: #e2e8f0; height: 100vh; overflow: hidden; }
+    .header { background: #1e2937; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+    .logo { font-size: 1.9rem; font-weight: bold; color: #60a5fa; }
+    .main { display: flex; height: calc(100vh - 60px); }
+    .content { flex: 1; padding: 40px; overflow-y: auto; }
+    .card { background: #1e2937; border-radius: 12px; padding: 30px; margin-bottom: 25px; border: 1px solid #334155; }
+    input, select { width: 100%; padding: 14px; margin: 10px 0; background: #334155; border: none; color: white; border-radius: 8px; }
+    button { padding: 16px; background: #3b82f6; border: none; border-radius: 10px; color: white; cursor: pointer; width: 100%; margin-top: 12px; font-size: 1.1rem; }
+    .option { background: #334155; padding: 18px; margin: 12px 0; border-radius: 10px; cursor: pointer; }
+    .option:hover { background: #3b82f6; }
+    .semester-box { background: #1e3a8a; padding: 20px; margin: 15px 0; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">AMRITA</div>
+    <h2>Smart Course Advisor</h2>
+    <div>System Online</div>
+  </div>
+
+  <div class="main">
+    <div class="content" id="contentArea"></div>
+  </div>
+
+  <script>
+    function startFlow() {
+      document.getElementById('contentArea').innerHTML = `
+        <h1 style="color:#60a5fa;">New Student Inquiry</h1>
+        <div class="card">
+          <h3>12th Marks (%)</h3>
+          <input type="number" id="marks" placeholder="e.g. 85">
+          <h3>12th Stream</h3>
+          <select id="stream">
+            <option value="">Select Stream</option>
+            <option value="MPC">MPC</option>
+            <option value="BiPC">BiPC</option>
+            <option value="MBiPC">MBiPC</option>
+            <option value="Commerce">Commerce</option>
+            <option value="Arts">Arts</option>
+          </select>
+          <button onclick="showCourses()">Show Recommended Courses</button>
+        </div>`;
+    }
+
+    function showCourses() {
+      const stream = document.getElementById('stream').value || "General";
+      let html = `<h1 style="color:#60a5fa;">Courses for ${stream} Stream</h1>`;
+
+      if (stream.includes("MPC") || stream.includes("MBiPC")) {
+        html += `<div class="option" onclick="viewCourse('B.Tech AI & Data Science')">B.Tech AI & Data Science</div>`;
+        html += `<div class="option" onclick="viewCourse('B.Tech Computer Science')">B.Tech Computer Science</div>`;
+      }
+      if (stream.includes("BiPC") || stream.includes("MBiPC")) {
+        html += `<div class="option" onclick="viewCourse('MBBS')">MBBS</div>`;
+        html += `<div class="option" onclick="viewCourse('BDS')">BDS</div>`;
+      }
+
+      html += `<div class="option" onclick="viewCourse('BCA')">BCA</div>`;
+      html += `<div class="option" onclick="viewCourse('BBA')">BBA</div>`;
+
+      document.getElementById('contentArea').innerHTML = html;
+    }
+
+    function viewCourse(course) {
+      document.getElementById('contentArea').innerHTML = `
+        <h1 style="color:#60a5fa;">${course}</h1>
+        <div class="card">
+          <h3>Select Semester</h3>
+          <select id="semSelect" onchange="showSemester('${course}', this.value)">
+            <option value="">-- Choose Semester --</option>
+            ${Array.from({length:8}, (_,i) => `<option value="${i+1}">Semester ${i+1}</option>`).join('')}
+          </select>
+          <div id="semContent" class="semester-box"></div>
+        </div>`;
+    }
+
+    function showSemester(course, sem) {
+      if (!sem) return;
+      let subjectsList = [];
+
+      if (course === "MBBS") {
+        subjectsList = ["Anatomy", "Physiology", "Biochemistry", "Pathology", "Microbiology"];
+      } else if (course.includes("AI") || course.includes("Computer")) {
+        subjectsList = ["Mathematics", "Programming", "Data Structures", "Machine Learning", "Deep Learning"];
+      } else {
+        subjectsList = ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Elective"];
+      }
+
+      const subjectsText = subjectsList.join(", ");
+
+      document.getElementById('semContent').innerHTML = `
+        <strong>Semester ${sem} Subjeacts:</strong><br>${subjectsText}
+        <br><br>
+        <button onclick="generateStudyOrder('${subjectsList.join('|')}')">Generate Study Order (Prerequisite)</button>
+        <div id="orderResult" style="margin-top:15px; background:#172554; padding:15px; border-radius:8px;"></div>
+      `;
+    }
+
+    function generateStudyOrder(subjectsStr) {
+      const subjects = subjectsStr.split('|');
+      // Simple logical order (can be improved later)
+      const order = subjects.map((sub, i) => `${i+1}. ${sub}`).join('<br>');
+      
+      document.getElementById('orderResult').innerHTML = `
+        <strong>Recommended Study Order:</strong><br>
+        ${order}<br><br>
+        <small>Study in this sequence for better understanding (Prerequisite Order)</small>
+      `;
+    }
+
+    window.onload = startFlow;
+  </script>
+</body>
+</html>
