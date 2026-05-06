@@ -1,123 +1,721 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AMRITA Smart Course Advisor</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: #e2e8f0; height: 100vh; overflow: hidden; }
-    .header { background: #1e2937; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-    .logo { font-size: 1.9rem; font-weight: bold; color: #60a5fa; }
-    .main { display: flex; height: calc(100vh - 60px); }
-    .content { flex: 1; padding: 40px; overflow-y: auto; }
-    .card { background: #1e2937; border-radius: 12px; padding: 30px; margin-bottom: 25px; border: 1px solid #334155; }
-    input, select { width: 100%; padding: 14px; margin: 10px 0; background: #334155; border: none; color: white; border-radius: 8px; }
-    button { padding: 16px; background: #3b82f6; border: none; border-radius: 10px; color: white; cursor: pointer; width: 100%; margin-top: 12px; font-size: 1.1rem; }
-    .option { background: #334155; padding: 18px; margin: 12px 0; border-radius: 10px; cursor: pointer; }
-    .option:hover { background: #3b82f6; }
-    .semester-box { background: #1e3a8a; padding: 20px; margin: 15px 0; border-radius: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Based Lexical Analyzer</title>
+
+<!-- MONACO EDITOR -->
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0d1117;
+    color:white;
+    font-family:Consolas, monospace;
+}
+
+/* TOPBAR */
+
+.topbar{
+    height:70px;
+    background:#161b22;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    border-bottom:2px solid #30363d;
+}
+
+.topbar h1{
+    color:#58a6ff;
+    font-size:35px;
+}
+
+/* BUTTONS */
+
+.top-buttons{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    background:#238636;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#2ea043;
+}
+
+/* FILE BUTTON */
+
+.upload-btn{
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    background:#238636;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    display:inline-block;
+    transition:0.3s;
+}
+
+.upload-btn:hover{
+    background:#2ea043;
+}
+
+input[type=file]{
+    display:none;
+}
+
+/* MAIN */
+
+.main{
+    display:flex;
+    height:calc(100vh - 70px);
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:220px;
+    background:#161b22;
+    border-right:2px solid #30363d;
+    padding-top:20px;
+}
+
+.sidebar h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:#58a6ff;
+}
+
+.tab{
+    padding:15px;
+    border-bottom:1px solid #30363d;
+}
+
+/* CONTENT */
+
+.content{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+/* EDITOR */
+
+.editor-section{
+    height:45%;
+    border-bottom:2px solid #30363d;
+}
+
+#editor{
+    width:100%;
+    height:100%;
+}
+
+/* OUTPUT */
+
+.output-section{
+    flex:1;
+    display:flex;
+    overflow:auto;
+}
+
+/* PANELS */
+
+.panel{
+    flex:1;
+    padding:15px;
+    overflow:auto;
+    border-right:1px solid #30363d;
+}
+
+.panel h2{
+    margin-bottom:15px;
+    color:#58a6ff;
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    border:1px solid #30363d;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#21262d;
+}
+
+tr:nth-child(even){
+    background:#161b22;
+}
+
+/* ERROR */
+
+.error{
+    color:#ff7b72;
+    margin-bottom:10px;
+}
+
+/* CORRECTED CODE */
+
+#correctedCodeBox{
+    background:#161b22;
+    padding:15px;
+    border-radius:10px;
+    color:#58a6ff;
+    min-height:200px;
+    white-space:pre-wrap;
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.card{
+    background:#161b22;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    border:1px solid #30363d;
+}
+
+.card h3{
+    color:#58a6ff;
+    margin-bottom:10px;
+    font-size:30px;
+}
+
+/* FOOTER */
+
+.footer{
+    background:#161b22;
+    padding:10px;
+    text-align:center;
+    border-top:1px solid #30363d;
+    color:gray;
+}
+
+</style>
+
 </head>
+
 <body>
 
-  <div class="header">
-    <div class="logo">AMRITA</div>
-    <h2>Smart Course Advisor</h2>
-    <div>System Online</div>
-  </div>
+<!-- TOPBAR -->
 
-  <div class="main">
-    <div class="content" id="contentArea"></div>
-  </div>
+<div class="topbar">
 
-  <script>
-    function startFlow() {
-      document.getElementById('contentArea').innerHTML = `
-        <h1 style="color:#60a5fa;">New Student Inquiry</h1>
-        <div class="card">
-          <h3>12th Marks (%)</h3>
-          <input type="number" id="marks" placeholder="e.g. 85">
-          <h3>12th Stream</h3>
-          <select id="stream">
-            <option value="">Select Stream</option>
-            <option value="MPC">MPC</option>
-            <option value="BiPC">BiPC</option>
-            <option value="MBiPC">MBiPC</option>
-            <option value="Commerce">Commerce</option>
-            <option value="Arts">Arts</option>
-          </select>
-          <button onclick="showCourses()">Show Recommended Courses</button>
-        </div>`;
+    <h1>AI Based Lexical Analyzer</h1>
+
+    <div class="top-buttons">
+
+        <label for="fileUpload" class="upload-btn">
+            Upload File
+        </label>
+
+        <input type="file"
+               id="fileUpload"
+               accept=".txt,.c,.cpp,.java">
+
+        <button onclick="analyze()">
+            Analyze Code
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>Compiler</h2>
+
+        <div class="tab">TOKENS</div>
+        <div class="tab">SYMBOL TABLE</div>
+        <div class="tab">ERRORS</div>
+        <div class="tab">CORRECTED CODE</div>
+        <div class="tab">STATISTICS</div>
+
+    </div>
+
+    <!-- CONTENT -->
+
+    <div class="content">
+
+        <!-- EDITOR -->
+
+        <div class="editor-section">
+            <div id="editor"></div>
+        </div>
+
+        <!-- OUTPUT -->
+
+        <div class="output-section">
+
+            <!-- TOKENS -->
+
+            <div class="panel">
+
+                <h2>Tokens</h2>
+
+                <table id="tokenTable">
+
+                    <thead>
+                        <tr>
+                            <th>Line</th>
+                            <th>Type</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+
+                    <tbody></tbody>
+
+                </table>
+
+            </div>
+
+            <!-- SYMBOL TABLE -->
+
+            <div class="panel">
+
+                <h2>Symbol Table</h2>
+
+                <table id="symbolTable">
+
+                    <thead>
+                        <tr>
+                            <th>Identifier</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+
+                    <tbody></tbody>
+
+                </table>
+
+            </div>
+
+            <!-- ERRORS -->
+
+            <div class="panel">
+
+                <h2>Errors</h2>
+
+                <div id="errors"></div>
+
+            </div>
+
+            <!-- CORRECTED CODE -->
+
+            <div class="panel">
+
+                <h2>Corrected Code</h2>
+
+                <pre id="correctedCodeBox"></pre>
+
+            </div>
+
+            <!-- STATISTICS -->
+
+            <div class="panel">
+
+                <h2>Statistics</h2>
+
+                <div class="stats">
+
+                    <div class="card">
+                        <h3 id="keywordCount">0</h3>
+                        <p>Keywords</p>
+                    </div>
+
+                    <div class="card">
+                        <h3 id="identifierCount">0</h3>
+                        <p>Identifiers</p>
+                    </div>
+
+                    <div class="card">
+                        <h3 id="numberCount">0</h3>
+                        <p>Numbers</p>
+                    </div>
+
+                    <div class="card">
+                        <h3 id="operatorCount">0</h3>
+                        <p>Operators</p>
+                    </div>
+
+                </div>
+
+                <br>
+
+                <canvas id="chart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+
+<div class="footer">
+    AI Based Mini Compiler Front-End Simulator
+</div>
+
+<script>
+
+/* MONACO EDITOR */
+
+let editor;
+
+require.config({
+    paths:{
+        vs:'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs'
+    }
+});
+
+require(['vs/editor/editor.main'], function(){
+
+    editor = monaco.editor.create(
+        document.getElementById('editor'),
+
+        {
+
+        value:
+`innt a = 10
+
+flot b = 5.5
+
+if(a > 5){
+    a = a + 1
+}`,
+
+        language:'cpp',
+        theme:'vs-dark',
+        automaticLayout:true
+
+    });
+
+});
+
+/* FILE UPLOAD */
+
+document.getElementById("fileUpload")
+.addEventListener("change", function(e){
+
+    let file = e.target.files[0];
+
+    if(file){
+
+        let reader = new FileReader();
+
+        reader.onload = function(event){
+
+            editor.setValue(event.target.result);
+
+        }
+
+        reader.readAsText(file);
+
     }
 
-    function showCourses() {
-      const stream = document.getElementById('stream').value || "General";
-      let html = `<h1 style="color:#60a5fa;">Courses for ${stream} Stream</h1>`;
+});
 
-      if (stream.includes("MPC") || stream.includes("MBiPC")) {
-        html += `<div class="option" onclick="viewCourse('B.Tech AI & Data Science')">B.Tech AI & Data Science</div>`;
-        html += `<div class="option" onclick="viewCourse('B.Tech Computer Science')">B.Tech Computer Science</div>`;
-      }
-      if (stream.includes("BiPC") || stream.includes("MBiPC")) {
-        html += `<div class="option" onclick="viewCourse('MBBS')">MBBS</div>`;
-        html += `<div class="option" onclick="viewCourse('BDS')">BDS</div>`;
-      }
+/* ANALYZE FUNCTION */
 
-      html += `<div class="option" onclick="viewCourse('BCA')">BCA</div>`;
-      html += `<div class="option" onclick="viewCourse('BBA')">BBA</div>`;
+function analyze(){
 
-      document.getElementById('contentArea').innerHTML = html;
+    let code = editor.getValue();
+
+    let tokenBody =
+        document.querySelector("#tokenTable tbody");
+
+    let symbolBody =
+        document.querySelector("#symbolTable tbody");
+
+    let errors =
+        document.getElementById("errors");
+
+    let correctedCodeBox =
+        document.getElementById("correctedCodeBox");
+
+    tokenBody.innerHTML = "";
+    symbolBody.innerHTML = "";
+    errors.innerHTML = "";
+
+    let correctedCode = "";
+
+    let patterns = [
+
+        {type:"KEYWORD",
+         regex:/^(int|float|if|else|while|return)\b/},
+
+        {type:"NUMBER",
+         regex:/^\d+(\.\d+)?/},
+
+        {type:"STRING",
+         regex:/^".*?"/},
+
+        {type:"COMMENT",
+         regex:/^(\/\/.*|\/\*[\s\S]*?\*\/)/},
+
+        {type:"IDENTIFIER",
+         regex:/^[a-zA-Z_][a-zA-Z0-9_]*/},
+
+        {type:"OPERATOR",
+         regex:/^(==|!=|<=|>=|&&|\|\||[+\-*/=<>])/},
+
+        {type:"DELIMITER",
+         regex:/^[;,(){}]/},
+
+        {type:"WHITESPACE",
+         regex:/^\s+/}
+
+    ];
+
+    let keywordCount = 0;
+    let identifierCount = 0;
+    let numberCount = 0;
+    let operatorCount = 0;
+
+    let identifiers = new Set();
+
+    let lines = code.split("\n");
+
+    lines.forEach((line, lineNumber)=>{
+
+        let correctedLine = line;
+
+        /* AUTO CORRECTIONS */
+
+        correctedLine =
+            correctedLine.replace(/\binnt\b/g, "int");
+
+        correctedLine =
+            correctedLine.replace(/\bflot\b/g, "float");
+
+        correctedLine =
+            correctedLine.replace(/\bretun\b/g, "return");
+
+        correctedLine =
+            correctedLine.replace(/\bwhille\b/g, "while");
+
+        correctedLine =
+            correctedLine.replace(/\bpritnf\b/g, "printf");
+
+        /* SEMICOLON CORRECTION */
+
+        if(
+            correctedLine.trim() !== "" &&
+            !correctedLine.trim().endsWith(";") &&
+            !correctedLine.includes("{") &&
+            !correctedLine.includes("}") &&
+            !correctedLine.includes("if") &&
+            !correctedLine.includes("while") &&
+            !correctedLine.trim().startsWith("//")
+        ){
+            correctedLine += ";";
+        }
+
+        correctedCode += correctedLine + "\n";
+
+        let current = correctedLine;
+
+        while(current.length > 0){
+
+            let matchFound = false;
+
+            for(let p of patterns){
+
+                let match = current.match(p.regex);
+
+                if(match){
+
+                    let value = match[0];
+
+                    if(
+                        p.type !== "WHITESPACE" &&
+                        p.type !== "COMMENT"
+                    ){
+
+                        tokenBody.innerHTML += `
+                        <tr>
+                            <td>${lineNumber + 1}</td>
+                            <td>${p.type}</td>
+                            <td>${value}</td>
+                        </tr>
+                        `;
+
+                        /* STATISTICS */
+
+                        if(p.type==="KEYWORD")
+                            keywordCount++;
+
+                        if(p.type==="IDENTIFIER")
+                            identifierCount++;
+
+                        if(p.type==="NUMBER")
+                            numberCount++;
+
+                        if(p.type==="OPERATOR")
+                            operatorCount++;
+
+                        /* SYMBOL TABLE */
+
+                        if(
+                            p.type==="IDENTIFIER" &&
+                            !identifiers.has(value)
+                        ){
+
+                            identifiers.add(value);
+
+                            symbolBody.innerHTML += `
+                            <tr>
+                                <td>${value}</td>
+                                <td>Variable</td>
+                            </tr>
+                            `;
+                        }
+
+                    }
+
+                    current =
+                        current.slice(value.length);
+
+                    matchFound = true;
+
+                    break;
+
+                }
+
+            }
+
+            /* INVALID TOKEN */
+
+            if(!matchFound){
+
+                errors.innerHTML += `
+                <div class="error">
+
+                    Invalid Symbol '${current[0]}'
+                    at line ${lineNumber + 1}
+
+                </div>
+                `;
+
+                current = current.slice(1);
+
+            }
+
+        }
+
+    });
+
+    /* NO ERRORS */
+
+    if(errors.innerHTML===""){
+
+        errors.innerHTML =
+            "No Lexical Errors";
+
     }
 
-    function viewCourse(course) {
-      document.getElementById('contentArea').innerHTML = `
-        <h1 style="color:#60a5fa;">${course}</h1>
-        <div class="card">
-          <h3>Select Semester</h3>
-          <select id="semSelect" onchange="showSemester('${course}', this.value)">
-            <option value="">-- Choose Semester --</option>
-            ${Array.from({length:8}, (_,i) => `<option value="${i+1}">Semester ${i+1}</option>`).join('')}
-          </select>
-          <div id="semContent" class="semester-box"></div>
-        </div>`;
-    }
+    /* SHOW CORRECTED CODE */
 
-    function showSemester(course, sem) {
-      if (!sem) return;
-      let subjectsList = [];
+    correctedCodeBox.innerText =
+        correctedCode;
 
-      if (course === "MBBS") {
-        subjectsList = ["Anatomy", "Physiology", "Biochemistry", "Pathology", "Microbiology"];
-      } else if (course.includes("AI") || course.includes("Computer")) {
-        subjectsList = ["Mathematics", "Programming", "Data Structures", "Machine Learning", "Deep Learning"];
-      } else {
-        subjectsList = ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Elective"];
-      }
+    /* UPDATE COUNTS */
 
-      const subjectsText = subjectsList.join(", ");
+    document.getElementById("keywordCount")
+    .innerText = keywordCount;
 
-      document.getElementById('semContent').innerHTML = `
-        <strong>Semester ${sem} Subjeacts:</strong><br>${subjectsText}
-        <br><br>
-        <button onclick="generateStudyOrder('${subjectsList.join('|')}')">Generate Study Order (Prerequisite)</button>
-        <div id="orderResult" style="margin-top:15px; background:#172554; padding:15px; border-radius:8px;"></div>
-      `;
-    }
+    document.getElementById("identifierCount")
+    .innerText = identifierCount;
 
-    function generateStudyOrder(subjectsStr) {
-      const subjects = subjectsStr.split('|');
-      // Simple logical order (can be improved later)
-      const order = subjects.map((sub, i) => `${i+1}. ${sub}`).join('<br>');
-      
-      document.getElementById('orderResult').innerHTML = `
-        <strong>Recommended Study Order:</strong><br>
-        ${order}<br><br>
-        <small>Study in this sequence for better understanding (Prerequisite Order)</small>
-      `;
-    }
+    document.getElementById("numberCount")
+    .innerText = numberCount;
 
-    window.onload = startFlow;
-  </script>
+    document.getElementById("operatorCount")
+    .innerText = operatorCount;
+
+    /* CHART */
+
+    let ctx =
+        document.getElementById("chart");
+
+    new Chart(ctx, {
+
+        type:'bar',
+
+        data:{
+
+            labels:[
+                'Keywords',
+                'Identifiers',
+                'Numbers',
+                'Operators'
+            ],
+
+            datasets:[{
+
+                label:'Token Count',
+
+                data:[
+                    keywordCount,
+                    identifierCount,
+                    numberCount,
+                    operatorCount
+                ]
+
+            }]
+        }
+
+    });
+
+}
+
+</script>
+
 </body>
 </html>
